@@ -17,10 +17,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up Java version
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v1
         with:
           java-version: '17'
-          distribution: 'microsoft'
 
       - name: Build with Gradle wrapper
         run: ./gradlew build
@@ -29,7 +28,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: java-app
-          path: '${{ github.workspace }}/build/libs/hello-for-azure-0.0.1-SNAPSHOT.jar'
+          path: '${{ github.workspace }}/build/libs/hello.jar'
 
   deploy:
     runs-on: ubuntu-latest
@@ -40,15 +39,15 @@ jobs:
       
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: java-app
-      
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
+        uses: azure/webapps-deploy@v2
         with:
           app-name: 'hello'
           slot-name: 'Production'
-          package: 'hello-for-azure-0.0.1-SNAPSHOT.jar'
+          package: 'hello.jar'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_457AB370737D47FDBFEEE92F4C8658E3 }}
